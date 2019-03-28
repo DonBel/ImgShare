@@ -21,10 +21,33 @@ Template.addImg.events({
 		console.log("save",imgPath);
 		console.log("save",imgDescription);
 		$("#addImgModal").modal("hide");
-	}
-		'change #imgPath'(events){
-			var imgPath = $('imgPath').val();
-			$("js-addImgPreview").attr('src,'imgPath);
-		}
+		imagesDB.insert({"title":imgTITLE, "path":imgPath, "description":imgDescription, "createdOn":Date()});
+	},
+	'input #imgPath'(){
+		var imgPath = $('#imgPath').val();
+		$(".js-addImgPreview").attr('src',imgPath);
+	},
+	'click .js-cancelAdd'(){
+		$("#imgTitle").val('');
+		$("#imgPath").val('');
+		$('#imgDescription').val('');
+		$("#addImgPreview").attr('src','Shichibukai_Infobox.png');
+		$("#addImgModal").modal("hide");
+	},
+
 });
 
+Template.mainBody.events({
+	'click .js-del-image'(){
+		var ImgId = this._id;
+		$('#'+ImgId).fadeOut('slow', function(){
+			imagesDB.remove({_id:ImgId});		
+		});
+	}
+});
+
+Template.mainBody.helpers({
+	allImages(){
+		return imagesDB.find();
+	}
+});
